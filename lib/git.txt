@@ -1,8 +1,9 @@
 git init .
 git status
-git commit 
+git commit -m "Description"
 git log
 
 git remote add origin git@github.com:anshra1/flutter_hooks_testing.git
 
- git push -u origin HEAD
+git push -u origin HEAD  
+git push -u origin HEAD -f
