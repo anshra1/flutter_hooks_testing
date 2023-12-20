@@ -39,6 +39,7 @@ class HomePage extends HookWidget {
         controller.addListener(() {
           text.value = controller.text;
         });
+
         return null;
       },
       [controller],
