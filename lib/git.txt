@@ -13,6 +13,7 @@ git branch
 git branch -M main - change branch name
 git push origin main - to push commit
 
+git push --set-upstream origin flutter_branch -- to make default branch to use git push
 git checkout -b branch_name - to create branch
 git checkout branch_name - to change branch
 git branch -d branch_name - to delete branch
