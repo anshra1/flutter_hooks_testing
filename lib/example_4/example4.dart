@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gap/gap.dart';
 
 void main() async {
   runApp(const MyApp());
@@ -24,44 +24,33 @@ class MyApp extends StatelessWidget {
 }
 
 extension CompactMap<T> on Iterable<T?> {
-  Iterable<T> compactMap<E>([E? Function(T?)? transform]) =>
-      map(transform ?? (e) => e).where((element) => e != null).cast();
+  Iterable<T> compactMap<E>([E? Function(T?)? transform]) => map(
+        transform ?? (e) => e,
+      ).where((e) => e != null).cast();
 }
+
+const url = 'https://shorturl.at/hlrux';
 
 class HomePage extends HookWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final c = TextEditingController();
-    c.addListener(() {});
-
-    final controller = useTextEditingController();
-    final text = useState('');
-
-    useEffect(
-      () {
-        controller.addListener(() {
-          text.value = controller.text;
-        });
-
-        return null;
-      },
-      [controller],
+    final future = useMemoized(
+      () => NetworkAssetBundle(Uri.parse(url))
+          .load(url)
+          .then((data) => data.buffer.asUint8List())
+          .then((data) => Image.memory(data,fit: BoxFit.fitHeight,)),
     );
+     final snapshot = useFuture(future);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Hooks'),
       ),
       body: Column(
-        children: [
-          Text('You Typed ${text.value}'),
-          const Gap(5),
-          TextField(
-            controller: controller,
-          ),
-        ],
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [snapshot.data].compactMap().toList(),
       ),
     );
   }
