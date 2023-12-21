@@ -1,15 +1,13 @@
-void main() {
-  final list = [null, 1, 4, 'g '];
-  Iterable f = list.check();
-  print(f);
+import 'dart:async';
 
-  print(list.check<int>((v) {
-    if (v is int) {
-      return v;
-    } else {
-      return 111;
-    }
-  }));
+void main() {
+  StreamSubscription sub =
+      Stream.periodic(const Duration(seconds: 1), (v) => 'V is $v').listen((event) {
+    print(event);
+  });
+
+  Future.delayed(Duration(seconds: 6), () => sub..cancel());
+
 }
 
 extension TestMap<T> on Iterable<T?> {

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:gap/gap.dart';
 
 void main() async {
   runApp(const MyApp());
@@ -9,16 +10,19 @@ void main() async {
 
 class CountDown extends ValueNotifier<int> {
   late StreamSubscription sub;
-  late int d;
+
   CountDown({required int from}) : super(from) {
-    sub = Stream.periodic(
-      const Duration(seconds: 1),
-      (v) => from - v,
-    ).takeWhile((element) => element >= 0).listen((event) {
+    sub = Stream.periodic(const Duration(seconds: 1), (v) => from - v)
+        .takeWhile((element) => element >= 0)
+        .listen((event) {
       value = event;
     });
   }
-  
+  @override
+  void dispose() {
+    sub.cancel();
+    super.dispose();
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -33,7 +37,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blueGrey,
         indicatorColor: Colors.blueGrey,
       ),
-      home: const HomePage(),
+      home: const HomePaged(),
     );
   }
 }
@@ -43,12 +47,61 @@ class HomePage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    CountDown counter = CountDown(from: 2);
+
+    final timer = useMemoized(() => counter);
+    final notifier = useListenable(timer);
+    // use useListenablee with useMemoized
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Hooks'),
       ),
-      body: const Column(
-        children: [],
+      body: Center(
+        child: Column(
+          children: [
+            Text(
+              notifier.value.toString(),
+              style: const TextStyle(fontSize: 40),
+            ),
+            const Gap(5),
+            const HomePaged(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class HomePaged extends HookWidget {
+  const HomePaged({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final counter = useMemoized(() => CountDown(from: 6));
+    final notifier = useState(counter.value);
+
+    useEffect(() {
+      counter.addListener(() {
+        notifier.value = counter.value;
+      });
+
+      return null;
+    }, [counter]);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Hooks'),
+      ),
+      body: Center(
+        child: Column(
+          children: [
+            Text(
+              'Value is ${notifier.value.toString()}',
+              style: const TextStyle(fontSize: 40),
+            ),
+          ],
+        ),
       ),
     );
   }
