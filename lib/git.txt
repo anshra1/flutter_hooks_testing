@@ -6,6 +6,7 @@ git commit -m "Description"
 git push
 git log
 
+
 // reset 
 
 git reset file_name - to reset single file in stagged condition 
@@ -24,6 +25,16 @@ git push origin main - to push commit
 
 git pull origin main  -- to bring change in local file 
 git merge branch_name  - to merge both branch
+
+
+git init .
+git remote add origin git@github.com:anshra1/flutter_hooks_testing.git -- repo add
+git  remote -v
+git branch
+git branch -M main - change branch name
+git push origin main - to push commit
+
+git push --set-upstream origin flutter_branch -- to make default branch to use git push
 
 git checkout -b branch_name - to create branch
 git checkout branch_name - to change branch
