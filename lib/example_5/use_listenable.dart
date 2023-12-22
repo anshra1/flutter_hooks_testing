@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blueGrey,
         indicatorColor: Colors.blueGrey,
       ),
-      home: const HomePaged(),
+      home: const HomePage(),
     );
   }
 }
@@ -50,6 +50,7 @@ class HomePage extends HookWidget {
     CountDown counter = CountDown(from: 2);
 
     final timer = useMemoized(() => counter);
+    print("object");
     final notifier = useListenable(timer);
     // use useListenablee with useMemoized
 
