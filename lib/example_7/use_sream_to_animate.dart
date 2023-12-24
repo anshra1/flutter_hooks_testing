@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:gap/gap.dart';
 
 void main() async {
   runApp(const MyApp());
@@ -45,13 +46,20 @@ class HomePage extends HookWidget {
       lowerBound: 0,
       upperBound: 1,
     );
+    var n = useState(0);
 
-    final controller = useScrollController();
+    final stream = Stream.periodic(const Duration(seconds: 1));
+
+    stream.listen((event) {
+      n.value++;
+      print(event);
+    });
+
+    // var timer = useStream(s);
 
     useEffect(() {
-      
-      controller.addListener(() {
-        final newOpacity = max(imageHeight - controller.offset, 0.0);
+      n.addListener(() {
+        final newOpacity = max(imageHeight - n.value, 0.0);
         final normalized = newOpacity.normalized(0.0, imageHeight).toDouble();
         opacity.value = normalized;
         size.value = normalized;
@@ -59,12 +67,12 @@ class HomePage extends HookWidget {
 
       return null;
     }, [
-      controller,
+      n,
     ]);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Hooks'),
+        title: Text('timer.data.toString()'),
       ),
       body: Column(
         children: [
@@ -83,17 +91,22 @@ class HomePage extends HookWidget {
               ),
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              controller: controller,
-              itemCount: 100,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text('Person $index'),
-                );
-              },
-            ),
+          const Gap(10),
+          ElevatedButton(
+            onPressed: () {
+              n.value = n.value + 10;
+              print(n.value);
+            },
+            child: const Text('Button'),
           ),
+          const Gap(10),
+          ElevatedButton(
+            onPressed: () {
+              n.value = n.value - 10;
+              print(n.value);
+            },
+            child: const Text('Increase'),
+          )
         ],
       ),
     );
@@ -110,49 +123,4 @@ extension Normalize on num {
       (normalizeMaxRange - normalizedRangeMin) *
           ((this - selfRangeMin) / (selfRangeMax - selfRangeMin)) +
       normalizedRangeMin;
-}
-
-class MyScrollableWidget extends StatefulWidget {
-  const MyScrollableWidget({super.key});
-
-  @override
-  State<MyScrollableWidget> createState() => _MyScrollableWidgetState();
-}
-
-class _MyScrollableWidgetState extends State<MyScrollableWidget> {
-  late ScrollController _scrollController;
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController = ScrollController();
-    _scrollController.addListener(_scrollListener);
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  void _scrollListener() {
-    double offset = _scrollController.offset;
-    // Do something with the scroll offset
-    print('Scroll offset: $offset');
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: ListView.builder(
-        controller: _scrollController,
-        itemCount: 100,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text('Item $index'),
-          );
-        },
-      ),
-    );
-  }
 }

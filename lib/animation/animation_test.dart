@@ -35,7 +35,8 @@ class _MyHomePageState extends State<MyHomePage>
     controller = AnimationController(
       vsync: this,
       lowerBound: 0,
-      upperBound: 5,
+      upperBound: 1,
+      
       duration: const Duration(seconds: 5),
     );
     colorAnimation =
