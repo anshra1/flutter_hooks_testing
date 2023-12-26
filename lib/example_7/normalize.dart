@@ -28,20 +28,13 @@ const url = 'https://shorturl.at/hlrux';
 const imageHeight = 300.0;
 
 class HomePage extends HookWidget {
-  const HomePage({super.key});
+const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final opacity = useAnimationController(
+    final animationValue = useAnimationController(
       duration: const Duration(seconds: 1),
-      initialValue: 1.0,
-      lowerBound: 0,
-      upperBound: 1,
-    );
-
-    final size = useAnimationController(
-      duration: const Duration(seconds: 1),
-      initialValue: 1.0,
+      initialValue: 0.5,
       lowerBound: 0,
       upperBound: 1,
     );
@@ -49,12 +42,11 @@ class HomePage extends HookWidget {
     final controller = useScrollController();
 
     useEffect(() {
-      
       controller.addListener(() {
         final newOpacity = max(imageHeight - controller.offset, 0.0);
         final normalized = newOpacity.normalized(0.0, imageHeight).toDouble();
-        opacity.value = normalized;
-        size.value = normalized;
+
+        animationValue.value = normalized;
       });
 
       return null;
@@ -69,11 +61,11 @@ class HomePage extends HookWidget {
       body: Column(
         children: [
           SizeTransition(
-            sizeFactor: size,
+            sizeFactor: animationValue,
             axis: Axis.vertical,
             axisAlignment: -1.0,
             child: FadeTransition(
-              opacity: opacity,
+              opacity: animationValue,
               child: Center(
                 child: Image.network(
                   url,

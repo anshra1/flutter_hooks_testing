@@ -1,5 +1,5 @@
+import 'dart:async';
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blueGrey,
         indicatorColor: Colors.blueGrey,
       ),
-      home: const HomePage(),
+      home: HomePage(),
     );
   }
 }
@@ -29,7 +29,11 @@ const url = 'https://shorturl.at/hlrux';
 const imageHeight = 300.0;
 
 class HomePage extends HookWidget {
-  const HomePage({super.key});
+  HomePage({super.key});
+
+  final s = Stream<int>.periodic(const Duration(seconds: 1), (v) {
+    return v;
+  }).takeWhile((v) => v < 13);
 
   @override
   Widget build(BuildContext context) {
@@ -46,33 +50,23 @@ class HomePage extends HookWidget {
       lowerBound: 0,
       upperBound: 1,
     );
-    var n = useState(0);
 
-    final stream = Stream.periodic(const Duration(seconds: 1));
+    final data = useStream(s);
 
-    stream.listen((event) {
-      n.value++;
-      print(event);
+    var ss = useState(0);
+    ss.value = data.data ?? 0;
+
+    ss.addListener(() {
+      final newOpacity = max(imageHeight - (ss.value * 25), 0.0);
+      final normalized = newOpacity.normalized(0.0, imageHeight).toDouble();
+      opacity.value = normalized;
+      size.value = normalized;
+      print(' state ${data.data} size ${size.value}');
     });
-
-    // var timer = useStream(s);
-
-    useEffect(() {
-      n.addListener(() {
-        final newOpacity = max(imageHeight - n.value, 0.0);
-        final normalized = newOpacity.normalized(0.0, imageHeight).toDouble();
-        opacity.value = normalized;
-        size.value = normalized;
-      });
-
-      return null;
-    }, [
-      n,
-    ]);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('timer.data.toString()'),
+        title: Text('Stram Testing ${ss.value}'),
       ),
       body: Column(
         children: [
@@ -94,16 +88,16 @@ class HomePage extends HookWidget {
           const Gap(10),
           ElevatedButton(
             onPressed: () {
-              n.value = n.value + 10;
-              print(n.value);
+              ss.value--;
             },
             child: const Text('Button'),
           ),
           const Gap(10),
           ElevatedButton(
             onPressed: () {
-              n.value = n.value - 10;
-              print(n.value);
+              size.value = 1;
+              opacity.value = 1;
+              
             },
             child: const Text('Increase'),
           )

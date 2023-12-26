@@ -28,7 +28,6 @@ class HomePage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     final controller = useTextEditingController();
     final text = useState('');
 

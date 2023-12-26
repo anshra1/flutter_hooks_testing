@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -47,12 +48,21 @@ class HomePage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    CountDown counter = CountDown(from: 2);
+    CountDown counter = CountDown(from: 5);
+    // final t = useMemoized(() => counter);
+    // var notifier = useState(0);
+
+    // useEffect(() {
+    //   t.addListener(() {
+    //     notifier.value = t.value;
+    //   });
+    //   return null;
+    // }, [counter]);
 
     final timer = useMemoized(() => counter);
     print("object");
     final notifier = useListenable(timer);
-    // use useListenablee with useMemoized
+
 
     return Scaffold(
       appBar: AppBar(
@@ -66,7 +76,7 @@ class HomePage extends HookWidget {
               style: const TextStyle(fontSize: 40),
             ),
             const Gap(5),
-            const HomePaged(),
+            //   const HomePaged(),
           ],
         ),
       ),

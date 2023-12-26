@@ -1,29 +1,19 @@
 import 'dart:async';
 
 void main() {
-  StreamSubscription sub =
-      Stream.periodic(const Duration(seconds: 1), (v) => 'V is $v').listen((event) {
-    print(event);
-  });
-
-  Future.delayed(Duration(seconds: 6), () => sub..cancel());
-
+  var s = 50.normalized(0, 60);
+  print(s);
+  
 }
 
-extension TestMap<T> on Iterable<T?> {
-  Iterable<T?> check<E>([E? Function(T?)? fun]) {
-    return map(
-      fun ?? (e) => e,
-    ).where((element) => element != null).cast();
-  }
-}
-
-extension OnList<T> on List? {
-  List? checkNull() {
-    if (this != null) {
-      return this as List<T>;
-    } else {
-      return ['THis is null'] as List<T>;
-    }
-  }
+extension Normalize on num {
+  num normalized(
+    num selfRangeMin,
+    num selfRangeMax, [
+    num normalizedRangeMin = 0.0,
+    num normalizeMaxRange = 1.0,
+  ]) =>
+      (normalizeMaxRange - normalizedRangeMin) *
+          ((this - selfRangeMin) / (selfRangeMax - selfRangeMin)) +
+      normalizedRangeMin;
 }
