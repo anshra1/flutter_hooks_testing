@@ -28,7 +28,7 @@ const url = 'https://shorturl.at/hlrux';
 const imageHeight = 300.0;
 
 class HomePage extends HookWidget {
-const HomePage({super.key});
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
